@@ -4,8 +4,10 @@ import puppeteer from "puppeteer";
 const cookies = JSON.parse(fs.readFileSync("./ml-cookies.json", "utf-8"));
 
 
-export async function searchProducts(query, limit = 5) {
-  const searchUrl = `https://lista.mercadolivre.com.br/${encodeURIComponent(query)}`;
+export async function searchProducts(query, limit = 5, userPriceRange) {
+  console.time('searchProducts execution time');
+  const startTime = Date.now();
+  const searchUrl = `https://lista.mercadolivre.com.br/${encodeURIComponent(query)}_PriceRange_0-${userPriceRange}_NoIndex_True`;
 
   const browser = await puppeteer.launch({
     headless: true,
@@ -40,8 +42,6 @@ export async function searchProducts(query, limit = 5) {
 
       const title = linkEl.innerText.trim();
       let link = linkEl.href.trim().split("?")[0];
-      if (link.includes("#")) link = link.split("#")[0];
-      if (link.includes("?")) link = link.split("?")[0];
 
       const priceWhole = card.querySelector(".andes-money-amount__fraction")?.innerText?.trim() ?? null;
       const priceCents = card.querySelector(".andes-money-amount__cents")?.innerText?.trim() ?? null;
@@ -54,6 +54,12 @@ export async function searchProducts(query, limit = 5) {
   }, limit);
 
   await browser.close();
+
+  const endTime = Date.now();
+  const executionTime = (endTime - startTime) / 1000; // Convert to seconds
+  console.log(`[searchProducts] Scraping completed in ${executionTime.toFixed(2)} seconds`);
+  console.timeEnd('searchProducts execution time');
+
   return products;
 }
 
@@ -120,7 +126,7 @@ export async function generateMercadolivreLinks(links) {
 
 (
   async () => {
-    const res = await searchProducts("placa de video rtx 3060", 3);
+    const res = await searchProducts("placa de video", 5, 1400);
     console.log(res);
   }
 )();
