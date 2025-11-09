@@ -108,26 +108,3 @@ export async function generateMercadolivreLinks(links) {
   await browser.close();
   return linksGerados;
 }
-
-// ===========================
-// TESTE
-
-/*
-(async () => {
-  const produtos = [
-    "https://www.mercadolivre.com.br/placa-de-video-geforce-rtx-3060-12gb-galax/p/MLB17716910#polycard_client=search-nordic&search_layout=grid&position=1&type=product&tracking_id=2a4fdc61-e4f0-4427-9426-a30a2021a67f&wid=MLB5535640064&sid=search"
-  ];
-
-  const resultado = await generateMercadolivreLinks(produtos);
-  console.log("\nLinks com comissão gerados:\n", resultado);
-})();
-
-*/
-
-(
-  async () => {
-    const res = await searchProducts("placa de video", 5, 1400);
-    console.log(res);
-  }
-)();
-

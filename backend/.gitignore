@@ -3,3 +3,4 @@ package-lock.json
 .env
 session
 src/utils/mercadolivre/ml-cookies.json
+ml-cookies.json
