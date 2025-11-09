@@ -38,3 +38,67 @@ export const createUser = async (req, res) => {
         });
     }
 };
+
+
+export const insertOrder = async (req, res) => {
+    try {
+        const { phoneNumber, order } = req.body;
+
+        const user = await User.findOne({ phoneNumber });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'Usuário não encontrado'
+            });
+        }
+
+        user.preferences.orders.push(order);
+
+        await user.save();
+
+        res.status(201).json({
+            success: true,
+            message: 'Pedido criado com sucesso!',
+            data: user
+        });
+    } catch (error) {
+        console.error('Erro ao criar pedido:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Erro ao processar a requisição',
+            error: error.message
+        });
+    }
+}
+
+export const changePriceRange = async (req, res) => {
+    try {
+        const { phoneNumber, priceRange } = req.body
+        const user = await User.findOne({ phoneNumber })
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'Usuário não encontrado'
+            });
+        }
+
+        user.priceRange = priceRange;
+
+        await user.save();
+
+        res.status(201).json({
+            success: true,
+            message: 'Faixa de preço alterada com sucesso!',
+            data: user
+        });
+    } catch (error) {
+        console.error('Erro ao alterar faixa de preço:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Erro ao processar a requisição',
+            error: error.message
+        });
+    }
+}
